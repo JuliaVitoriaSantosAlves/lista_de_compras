@@ -107,14 +107,33 @@ const App: React.FC = () => {
 
   const exportToPDF = () => {
     const doc = new jsPDF();
-    doc.text('Lista de compras', 14, 16);
-    const tableData = sortedItems.map(item => [item.name, item.category]);
-    doc.autoTable({
-      head: [['Nome', 'Categoria']],
-      body: tableData,
-      startY: 20,
+    
+    doc.setFont('Times', 'normal');
+    doc.setFontSize(14);
+    doc.text('Lista de Compras', 105, 20, { align: 'center' });
+  
+    doc.setFontSize(12);
+    doc.setFont('Times', 'bold');
+    
+    doc.text('Nome', 20, 40);
+    doc.text('Categoria', 120, 40);
+  
+    doc.setFont('Times', 'normal');
+    
+    let y = 50; // Posição inicial vertical para os dados
+    sortedItems.forEach(item => {
+      doc.text(item.name, 20, y);
+      doc.text(item.category, 120, y);
+      y += 10; // Espaçamento entre linhas
     });
-    doc.save('Lista-de-compras.pdf');
+  
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0'); // Adiciona zero à esquerda se necessário
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Meses em JS são baseados em 0 (Janeiro = 0)
+  
+    const fileName = `Lista-de-compras${day}${month}.pdf`;
+  
+    doc.save(fileName);
   };
 
   return (
